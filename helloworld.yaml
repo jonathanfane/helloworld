@@ -5,6 +5,7 @@ metadata:
 spec:
   selector:
     app: helloworld
+    track: production
     tier: frontend
   ports:
     - protocol: TCP
@@ -19,7 +20,6 @@ metadata:
   name: helloworld
 spec:
   replicas: 2
-  minReadySeconds: 5
   template:
     metadata:
       labels:
@@ -30,7 +30,6 @@ spec:
       containers:
         - name: helloworld
           image: "jonathanfane/helloworld"
-          imagePullPolicy: Always
           ports:
             - name: http
               containerPort: 8000
