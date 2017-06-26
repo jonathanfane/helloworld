@@ -3,8 +3,17 @@ var http = require('http');
 
 // configure our HTTP server
 var server = http.createServer(function (request, response) {
-  response.writeHead(200, {"Content-Type": "text/plain"});
-  response.end("Hello World - Version 7\n");
+  response.writeHead(200, {"Content-Type": "text/html"});
+  response.write("<!DOCTYPE "html">");
+  response.write("<html>");
+  response.write("<head>");
+  response.write("<title>Hello World Page</title>");
+  response.write("</head>");
+  response.write("<body>");
+  response.write("Hello World - version 1!");
+  response.write("</body>");
+  response.write("</html>");
+  response.end();
 });
 
 // listen on localhost:8000
