@@ -33,4 +33,11 @@ node {
             app.push("latest")
         }
     }
+    
+    stage('Deploy ') {
+       /* uses the local installed kubectl on ci/cd server */
+       sh "kubectl apply -f helloworld.yaml --kubeconfig=/kubernetes/config/admin.conf"   
+    }
+    
+    
 }
