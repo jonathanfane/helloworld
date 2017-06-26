@@ -38,7 +38,7 @@ node {
         
        sleep 60
        /* uses the local installed kubectl on ci/cd server */
-       sh "kubectl apply -f helloworld.yaml --kubeconfig=/kubernetes/config/admin.conf"   
+       sh 'kubectl set image deployment/helloworld helloworld=jonathanfane/helloworld:"${env.BUILD_NUMBER}"'
     }
     
     
