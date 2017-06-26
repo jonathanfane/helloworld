@@ -36,7 +36,7 @@ node {
     
     stage('Deploy ') {
         
-       sleep 30
+       sleep 60
        /* uses the local installed kubectl on ci/cd server */
        sh "kubectl apply -f helloworld.yaml --kubeconfig=/kubernetes/config/admin.conf"   
     }
