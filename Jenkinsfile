@@ -38,7 +38,7 @@ node {
         
        sleep 15
        /* uses the local installed kubectl on ci/cd server */
-       sh kubectl set image deployment/helloworld helloworld=jonathanfane/helloworld:"${env.BUILD_NUMBER}"
+       sh 'kubectl set image deployment/helloworld helloworld=jonathanfane/helloworld:"${BUILD_NUMBER}"'
     }
     
     
