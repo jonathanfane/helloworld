@@ -7,7 +7,7 @@ var server = http.createServer(function (request, response) {
   response.header('Expires', '-1');
   response.header('Pragma', 'no-cache');
   response.writeHead(200, {"Content-Type": "text/plain"});
-  response.end("Hello World - Version 2c\n");
+  response.end("Hello World - Version 2d\n");
 });
 
 // listen on localhost:8000
