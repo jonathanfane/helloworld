@@ -1,5 +1,6 @@
 node {
     def app
+	def deployment = "rolling" 
 
     stage('Clone repository') {
         /* Let's make sure we have the repository cloned to our workspace */
@@ -34,12 +35,23 @@ node {
         }
     }
     
+	
     stage('Deploy ') {
-        
-       sleep 15
+    
+	 sleep 5
+	
+     if (deployment == "rolling") {                                          
+               
        /* uses the local installed kubectl on ci/cd server */
        sh "kubectl set image deployment/helloworld helloworld=jonathanfane/helloworld:${env.BUILD_NUMBER} --kubeconfig=/kubernetes/config/admin.conf"
-    }
+		
+      } else {                                   
+       sh "echo hello"
+     }
+
+    
+	
+	}
     
     
 }
