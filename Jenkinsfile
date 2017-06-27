@@ -2,20 +2,20 @@ node {
     def app
 	def deployment = "canary" 
 
-    stage('Clone repository') {
+    stage('Clone GIT') {
         /* Let's make sure we have the repository cloned to our workspace */
 
         checkout scm
     }
 
-    stage('Build image') {
+    stage('Build Docker Image') {
         /* This builds the actual image; synonymous to
          * docker build on the command line */
 
         app = docker.build("jonathanfane/helloworld")
     }
 
-    stage('Test image') {
+    stage('Run Unit Tests') {
         /* Ideally, we would run a test framework against our image.
          * For this example, we're using a Volkswagen-type approach ;-) */
 
@@ -24,7 +24,7 @@ node {
         }
     }
 
-    stage('Push image') {
+    stage('Push to Source Control') {
         /* Finally, we'll push the image with two tags:
          * First, the incremental build number from Jenkins
          * Second, the 'latest' tag.
@@ -36,30 +36,40 @@ node {
     }
     
 	
-    stage('Deploy to K8S ') {
+    stage('Deploy to K8S') {
     
 	 sleep 5
 	
      if (deployment == "rolling") {                                          
                
-	   	stage('Deploy Rolling Upgrade ') { 	   
-           /* uses the local installed kubectl on ci/cd server */
-           sh "kubectl set image deployment/helloworld helloworld=jonathanfane/helloworld:${env.BUILD_NUMBER} --kubeconfig=/kubernetes/config/admin.conf"
-		}
+        stage('Deploy Rolling Upgrade') { 	   
+          sh "kubectl set image deployment/helloworld helloworld=jonathanfane/helloworld:${env.BUILD_NUMBER} --kubeconfig=/kubernetes/config/admin.conf"
+        }
 		
      }
  
-     if (deployment == "canary") {                                          
+     if (deployment == "canary") {       
+	     
+       stage('Deploy Canary Release') { 	   
+          sh "kubectl apply -f helloworld-canary-deployment.yaml --kubeconfig=/kubernetes/config/admin.conf"
+          sh "kubectl apply -f helloworld-canary-service.yaml --kubeconfig=/kubernetes/config/admin.conf"  
+        }
                
-	   	stage('Canary Upgrade') { 	   
-           echo "hello"
-		}
-		
+       stage('Run Canary Testing') { 	   
+          sleep 60
+        }
+
+       stage('Promote to Production') { 	   
+          sh "kubectl set image deployment/helloworld helloworld=jonathanfane/helloworld:${env.BUILD_NUMBER} --kubeconfig=/kubernetes/config/admin.conf"
+          sh "kubectl delete -f helloworld-canary-deployment.yaml --kubeconfig=/kubernetes/config/admin.conf" 
+          sh "kubectl apply -f helloworld-production-service.yaml --kubeconfig=/kubernetes/config/admin.conf" 
+        }
+
      }
+		
+    }
 	 
     
 	
-	}
-    
-    
 }
+  
