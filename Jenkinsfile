@@ -38,16 +38,20 @@ node {
 	
     stage('Deploy to K8S') {
     
-	 sleep 5
-	
+    sleep 5
+	    
+     /* RUN A ROLLING DEPLOYMENT */
      if (deployment == "rolling") {                                          
                
         stage('Deploy Rolling Upgrade') { 	   
           sh "kubectl set image deployment/helloworld helloworld=jonathanfane/helloworld:${env.BUILD_NUMBER} --kubeconfig=/kubernetes/config/admin.conf"
+          sleep 120
+		
         }
 		
      }
  
+     /* RUN A CANARY DEPLOYMENT */
      if (deployment == "canary") {       
 	     
        stage('Deploy Canary Release') { 	   
@@ -68,6 +72,8 @@ node {
         }
 
      }
+	    
+	    
 		
     }
 	 
