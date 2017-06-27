@@ -3,7 +3,7 @@ var http = require('http');
 
 // configure our HTTP server
 var server = http.createServer(function (request, response) {
-  response.writeHead(200, {"Content-Type": "text/plain"});
+  response.writeHead(200, {"Content-Type": "text/plain", "Cache-Control":"no-cache"});
   response.end("Hello World - Version 2d\n");
 });
 
