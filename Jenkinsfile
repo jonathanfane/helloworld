@@ -1,6 +1,6 @@
 node {
     def app
-	def deployment = "rolling" 
+	def deployment = "canary" 
 
     stage('Clone repository') {
         /* Let's make sure we have the repository cloned to our workspace */
