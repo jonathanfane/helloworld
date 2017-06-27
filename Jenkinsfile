@@ -53,6 +53,7 @@ node {
        stage('Deploy Canary Release') { 	   
           sh "kubectl apply -f helloworld-canary-deployment.yaml --kubeconfig=/kubernetes/config/admin.conf"
           sh "kubectl apply -f helloworld-canary-service.yaml --kubeconfig=/kubernetes/config/admin.conf"  
+	  sleep 60
         }
                
        stage('Run Canary Testing') { 	   
@@ -61,6 +62,7 @@ node {
 
        stage('Promote to Production') { 	   
           sh "kubectl set image deployment/helloworld helloworld=jonathanfane/helloworld:${env.BUILD_NUMBER} --kubeconfig=/kubernetes/config/admin.conf"
+	  sleep 30    
           sh "kubectl delete -f helloworld-canary-deployment.yaml --kubeconfig=/kubernetes/config/admin.conf" 
           sh "kubectl apply -f helloworld-production-service.yaml --kubeconfig=/kubernetes/config/admin.conf" 
         }
