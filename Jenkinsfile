@@ -39,7 +39,13 @@ node {
     stage('Deploy to K8S') {
     
     sleep 5
-	    
+	
+     /* RUN A ROLLING DEPLOYMENT */
+     if (deployment == "dummy") {                                          
+       echo "dummy"          	
+     }
+		
+        
      /* RUN A ROLLING DEPLOYMENT */
      if (deployment == "rolling") {                                          
                
