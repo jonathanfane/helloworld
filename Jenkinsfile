@@ -63,7 +63,7 @@ node {
        stage('Deploy Canary Release') { 	   
           sh "kubectl apply -f helloworld-canary-deployment.yaml --kubeconfig=/kubernetes/config/admin.conf"
           sh "kubectl apply -f helloworld-canary-service.yaml --kubeconfig=/kubernetes/config/admin.conf"  
-	  sleep 60
+	      sleep 60
         }
                
        stage('Run Canary Testing') { 	   
@@ -72,12 +72,35 @@ node {
 
        stage('Promote to Production') { 	   
           sh "kubectl set image deployment/helloworld helloworld=jonathanfane/helloworld:${env.BUILD_NUMBER} --kubeconfig=/kubernetes/config/admin.conf"
-	  sleep 30    
+	      sleep 30    
           sh "kubectl delete -f helloworld-canary-deployment.yaml --kubeconfig=/kubernetes/config/admin.conf" 
           sh "kubectl apply -f helloworld-production-service.yaml --kubeconfig=/kubernetes/config/admin.conf" 
         }
 
      }
+	 
+     /* RUN A BLUE/GREEN */
+     if (deployment == "bluegreen") {       
+	     
+       stage('Deploy GREEN Release') { 	   
+          sh "kubectl apply -f helloworld-bluegreen-deployment.yaml --kubeconfig=/kubernetes/config/admin.conf"
+	      sleep 60
+        }
+               
+       stage('Switchover to GREEN') { 	   
+          sh "kubectl apply -f helloworld-bluegreen-service.yaml --kubeconfig=/kubernetes/config/admin.conf"
+        }
+		
+       stage('Run Testing') { 	   
+          sleep 30
+        }
+
+       stage('SwitchBack to BLUE') { 	   
+          sh "kubectl apply -f helloworld-production-service.yaml --kubeconfig=/kubernetes/config/admin.conf"  
+          sh "kubectl delete -f helloworld-bluegreen-deployment.yaml --kubeconfig=/kubernetes/config/admin.conf" 
+        }
+
+     } 
 	    
 	    
 		
