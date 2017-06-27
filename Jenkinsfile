@@ -1,6 +1,6 @@
 node {
     def app
-	def deployment = "rolling" 
+	def deployment = "canary" 
 
     stage('Clone repository') {
         /* Let's make sure we have the repository cloned to our workspace */
@@ -36,7 +36,7 @@ node {
     }
     
 	
-    stage('Deploy ') {
+    stage('Deploy to K8S ') {
     
 	 sleep 5
 	
@@ -49,7 +49,14 @@ node {
 		
      }
  
-
+     if (deployment == "canary") {                                          
+               
+	   	stage('Canary Upgrade') { 	   
+           echo "hello"
+		}
+		
+     }
+	 
     
 	
 	}
